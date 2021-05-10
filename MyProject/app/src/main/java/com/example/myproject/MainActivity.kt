@@ -6,13 +6,26 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
+import android.widget.ListView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.example.myproject.App.Companion.CHANNEL_1_ID
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.databind.ObjectMapper
+import java.net.HttpURLConnection
+import java.net.URL
+import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {
+    /*companion object {
+        var locationName : String? = null
+    }*/
     private lateinit var notificationManager : NotificationManagerCompat
+    var locationName : String? = null
+    //val tv = findViewById<TextView>(R.id.locationName)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,8 +35,41 @@ class MainActivity : AppCompatActivity() {
         createNotification()
     }
 
-    fun getURL() {
+    override fun onResume() {
+        super.onResume()
 
+        thread() {
+            // put json data in string
+            val weatherJson : String? = getUrl("https://api.openweathermap.org/data/2.5/weather?lat=61.4898&lon=23.7735&appid=19076a0898f9475f79721bd1a75ea780&units=metric")
+            println(weatherJson)
+            val mapper = ObjectMapper()
+            // deserialize weatherJson
+            val weatherObject: WeatherJsonObject = mapper.readValue(weatherJson, WeatherJsonObject::class.java)
+
+            /*locationName = weatherObject.name
+            // activity-weather-notification xml
+            tv.setText(locationName)*/
+
+            println(weatherObject.name)
+            val currentWeather: MutableList<WeatherInfo>? = weatherObject.weather
+            currentWeather?.forEach {
+                println(it)
+            }
+        }
+    }
+
+    fun getUrl(url : String) : String? {
+        var result : String? = ""
+        val url: URL = URL(url)
+        val conn = url.openConnection() as HttpURLConnection
+        try {
+            result = conn.inputStream.bufferedReader().use {it.readText()}
+        } catch (e : Exception) {
+            println(e)
+        } finally {
+            conn.disconnect()
+        }
+        return result
     }
 
     private fun createNotification() {
@@ -44,4 +90,10 @@ class MainActivity : AppCompatActivity() {
 
         //val notificationChannelId: String = NotificationUtil.createNotificationChannel(this, bigTextStyleReminderAppData)
     }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class WeatherInfo(var main : String? = null)
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class WeatherJsonObject(var name : String? = null, var weather: MutableList<WeatherInfo>? = null)
 }
