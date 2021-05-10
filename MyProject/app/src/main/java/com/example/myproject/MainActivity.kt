@@ -50,9 +50,6 @@ class MainActivity : AppCompatActivity() {
             locationName = weatherObject.name
             temperature = weatherObject.main.temp.toInt()
 
-            val intent = Intent(this, WeatherNotificationActivity::class.java)
-            //intent.putExtra(locationName, temperature, weatherDesc, locNameTextView, tempTextView, weatherTextView)
-
             println(weatherObject.name)
             println(weatherObject.main.temp)
             val currentWeather: MutableList<WeatherInfo>? = weatherObject.weather

@@ -1,16 +1,26 @@
 package com.example.myproject
 
-import androidx.appcompat.app.AppCompatActivity
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.Drawable
+import android.os.AsyncTask
 import android.os.Bundle
+import android.util.Log
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import com.example.myproject.MainActivity.Companion.locationName
 import com.example.myproject.MainActivity.Companion.temperature
 import com.example.myproject.MainActivity.Companion.weatherDesc
+import java.io.InputStream
+import java.net.URL
+
 
 class WeatherNotificationActivity : AppCompatActivity() {
     lateinit var locNameTextView : TextView
     lateinit var weatherTextView : TextView
-    lateinit var tempTextView: TextView
+    lateinit var tempTextView : TextView
+    lateinit var weatherImageView : ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,5 +32,8 @@ class WeatherNotificationActivity : AppCompatActivity() {
         weatherTextView.setText(weatherDesc)
         tempTextView = findViewById<TextView>(R.id.temp)
         tempTextView.setText(getString(R.string.temp_celsius, temperature))
+        
+        weatherImageView = findViewById(R.id.weatherIcon)
+        weatherImageView.setImageResource(R.drawable.ic_02d)
     }
 }
