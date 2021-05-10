@@ -15,17 +15,18 @@ import androidx.core.app.NotificationManagerCompat
 import com.example.myproject.App.Companion.CHANNEL_1_ID
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
 import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {
-    /*companion object {
+    companion object {
         var locationName : String? = null
-    }*/
+        var weatherDesc : String? = null
+        var temperature : Int = 0
+    }
     private lateinit var notificationManager : NotificationManagerCompat
-    var locationName : String? = null
-    //val tv = findViewById<TextView>(R.id.locationName)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,14 +47,18 @@ class MainActivity : AppCompatActivity() {
             // deserialize weatherJson
             val weatherObject: WeatherJsonObject = mapper.readValue(weatherJson, WeatherJsonObject::class.java)
 
-            /*locationName = weatherObject.name
-            // activity-weather-notification xml
-            tv.setText(locationName)*/
+            locationName = weatherObject.name
+            temperature = weatherObject.main.temp.toInt()
+
+            val intent = Intent(this, WeatherNotificationActivity::class.java)
+            //intent.putExtra(locationName, temperature, weatherDesc, locNameTextView, tempTextView, weatherTextView)
 
             println(weatherObject.name)
+            println(weatherObject.main.temp)
             val currentWeather: MutableList<WeatherInfo>? = weatherObject.weather
             currentWeather?.forEach {
-                println(it)
+                println(it.main)
+                weatherDesc = it.main
             }
         }
     }
@@ -95,5 +100,8 @@ class MainActivity : AppCompatActivity() {
     data class WeatherInfo(var main : String? = null)
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    data class WeatherJsonObject(var name : String? = null, var weather: MutableList<WeatherInfo>? = null)
+    data class WeatherTemp(var temp : Double = 0.0)
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class WeatherJsonObject(var name : String? = null, var weather : MutableList<WeatherInfo>? = null, var main : WeatherTemp = WeatherTemp(0.0))
 }

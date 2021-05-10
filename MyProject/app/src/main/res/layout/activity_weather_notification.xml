@@ -15,14 +15,40 @@
         android:text="Weather notification activity"
         android:textSize="30dp" />
 
-    <TextView
-        android:id="@+id/locationName"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="40dp"
-        android:text="City name"
-        android:textSize="30dp"
-        android:gravity="center" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/locName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="40dp"
+            android:text="Location name"
+            android:textSize="30dp"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/weather"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="40dp"
+            android:text="Weather description"
+            android:textSize="30dp"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/temp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="40dp"
+            android:text="Temperature"
+            android:textSize="30dp"
+            android:gravity="center" />
+
+    </LinearLayout>
 
 
 </LinearLayout>
