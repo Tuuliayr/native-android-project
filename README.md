@@ -9,7 +9,7 @@
 
 - User gets a notification with dummy data, when opening the app.
 - User can tap the notification which opens weather view.
-- User is able to view weather data from the backend. This means current temperature and weather description in Tampere.
+- User is able to view weather data from the backend. The data includes current temperature and weather description in Tampere.
 - User is able to navigate between home and weather views.
 
 ## Known bugs
