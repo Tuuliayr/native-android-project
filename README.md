@@ -8,7 +8,7 @@
 ## Release 1: 2021-05-12 features
 
 - User gets a notification with dummy data, when opening the app.
-- User can tap the notification which opens weather view.
+- User is able to tap the notification which opens weather view.
 - User is able to view weather data from the backend. The data includes current temperature and weather description in Tampere.
 - User is able to navigate between home and weather views.
 
