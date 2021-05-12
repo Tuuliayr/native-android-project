@@ -27,7 +27,6 @@ class App : Application() {
             val channel1 =
                     NotificationChannel(CHANNEL_1_ID, "channel1",
                             NotificationManager.IMPORTANCE_HIGH)
-            // weather channel?
             channel1.description = "This is channel 1"
 
             // channel 2

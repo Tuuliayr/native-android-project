@@ -4,12 +4,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center"
-    android:paddingBottom="20dp"
     tools:context=".WeatherNotificationActivity">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageButton
+            android:onClick="backButtonClicked"
+            android:id="@+id/imageButton_back"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:adjustViewBounds="true"
+            android:background="@drawable/roundedbutton"
+            android:scaleType="fitCenter"
+            android:src="@drawable/abc_vector_test" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
 
     <TextView
         android:layout_width="wrap_content"
@@ -27,7 +50,7 @@
         android:paddingTop="10dp">
 
         <ImageView
-            android:id="@+id/weatherIcon"
+            android:id="@+id/imageView_weatherIcon"
             android:layout_width="75dp"
             android:layout_height="75dp"
             android:src="@drawable/ic_01d"
@@ -35,18 +58,27 @@
             />
 
         <TextView
-            android:id="@+id/weather"
+            android:id="@+id/textView_weather"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingTop="40dp"
-            android:text="Weather description"
+            android:text="Weather"
             android:textSize="26sp"
             android:gravity="center" />
 
     </LinearLayout>
 
     <TextView
-        android:id="@+id/temp"
+        android:id="@+id/textView_weatherInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="40dp"
+        android:text="Weather description"
+        android:textSize="20sp"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/textView_temp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="40dp"
@@ -55,12 +87,14 @@
         android:gravity="center" />
 
     <TextView
-        android:id="@+id/locName"
+        android:id="@+id/textView_locName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="40dp"
         android:text="Location name"
         android:textSize="23sp"
         android:gravity="center" />
+
+    </LinearLayout>
 
 </LinearLayout>

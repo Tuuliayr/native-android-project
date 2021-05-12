@@ -7,6 +7,9 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ListView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -23,14 +26,19 @@ import kotlin.concurrent.thread
 class MainActivity : AppCompatActivity() {
     companion object {
         var locationName : String? = null
+        var weather : String? = null
         var weatherDesc : String? = null
         var temperature : Int = 0
+        var weatherId : Int = 0
     }
     private lateinit var notificationManager : NotificationManagerCompat
+    private lateinit var weatherButton : ImageButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        weatherButton = findViewById(R.id.imageButton_weather)
 
         notificationManager = NotificationManagerCompat.from(this)
         createNotification()
@@ -55,9 +63,20 @@ class MainActivity : AppCompatActivity() {
             val currentWeather: MutableList<WeatherInfo>? = weatherObject.weather
             currentWeather?.forEach {
                 println(it.main)
-                weatherDesc = it.main
+                weather = it.main
+                weatherDesc = it.description
+                weatherId = it.id
             }
         }
+    }
+
+    fun weatherButtonClicked(button: View) {
+        openWeatherActivity()
+    }
+
+    private fun openWeatherActivity() {
+        val resultIntent = Intent(this, WeatherNotificationActivity::class.java)
+        startActivity(resultIntent)
     }
 
     fun getUrl(url : String) : String? {
@@ -81,8 +100,8 @@ class MainActivity : AppCompatActivity() {
 
         val notification = NotificationCompat.Builder(this, CHANNEL_1_ID)
                 .setSmallIcon(R.drawable.ic_strength)
-                .setContentTitle("Hello")
-                .setContentText("World")
+                .setContentTitle("Current Weather")
+                .setContentText("weather")
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setAutoCancel(true)
                 .setContentIntent(resultPendingIntent)
@@ -94,7 +113,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    data class WeatherInfo(var main : String? = null)
+    data class WeatherInfo(var id : Int = 0, var main : String? = null, var description : String? = null)
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     data class WeatherTemp(var temp : Double = 0.0)
