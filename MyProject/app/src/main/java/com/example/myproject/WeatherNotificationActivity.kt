@@ -1,19 +1,26 @@
 package com.example.myproject
 
+import android.Manifest
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
+import com.example.myproject.Constants.REQUEST_CODE_LOCATION_PERMISSION
 import com.example.myproject.MainActivity.Companion.locationName
 import com.example.myproject.MainActivity.Companion.temperature
 import com.example.myproject.MainActivity.Companion.weather
 import com.example.myproject.MainActivity.Companion.weatherDesc
 import com.example.myproject.MainActivity.Companion.weatherId
+import com.vmadalin.easypermissions.EasyPermissions
+import com.vmadalin.easypermissions.dialogs.SettingsDialog
+import com.vmadalin.easypermissions.helpers.base.PermissionsHelper
 
 
-class WeatherNotificationActivity : AppCompatActivity() {
+class WeatherNotificationActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
     lateinit var locNameTextView : TextView
     lateinit var weatherTextView : TextView
     lateinit var infoTextView: TextView
@@ -22,6 +29,7 @@ class WeatherNotificationActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestPermissions()
         setContentView(R.layout.activity_weather_notification)
 
         locNameTextView = findViewById(R.id.textView_locName)
@@ -34,7 +42,7 @@ class WeatherNotificationActivity : AppCompatActivity() {
         tempTextView.setText(getString(R.string.temp_celsius, temperature))
 
         weatherImageView = findViewById(R.id.imageView_weatherIcon)
-        var icon : String = getWeatherIcon(weatherId)
+        val icon : String = getWeatherIcon(weatherId)
         weatherImageView.setImageResource(resources.getIdentifier(icon, "drawable", packageName));
     }
 
@@ -83,5 +91,51 @@ class WeatherNotificationActivity : AppCompatActivity() {
             }
         }
         return icon
+    }
+
+    private fun requestPermissions() {
+        if (TrackingUtility.hasLocationPermissions(this)) {
+            return
+        }
+        // Check android version again if user denied permission
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            EasyPermissions.requestPermissions(
+                this,
+                "You need to accept location permissions to use this function of the app.",
+                REQUEST_CODE_LOCATION_PERMISSION,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
+        } else {
+            EasyPermissions.requestPermissions(
+                this,
+                "You need to accept location permissions to use this function of the app.",
+                REQUEST_CODE_LOCATION_PERMISSION,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION
+            )
+        }
+    }
+
+    override fun onPermissionsDenied(requestCode: Int, perms: List<String>) {
+        if(EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            SettingsDialog.Builder(this).build().show()
+        }
+        /*else {
+            requestPermissions()
+        }*/
+    }
+
+    // Not used but required by the interface
+    override fun onPermissionsGranted(requestCode: Int, perms: List<String>) {}
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
 }

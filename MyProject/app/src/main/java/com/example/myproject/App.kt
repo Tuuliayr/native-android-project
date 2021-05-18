@@ -6,12 +6,14 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.example.myproject.Constants.CHANNEL_1_ID
+import com.example.myproject.Constants.CHANNEL_2_ID
 
 class App : Application() {
-    companion object {
+    /*companion object {
         const val CHANNEL_1_ID: String = "channel1"
         const val CHANNEL_2_ID: String = "channel2"
-    }
+    }*/
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate() {
         super.onCreate()

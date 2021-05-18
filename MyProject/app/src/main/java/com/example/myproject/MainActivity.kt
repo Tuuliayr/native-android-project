@@ -15,9 +15,10 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.example.myproject.App.Companion.CHANNEL_1_ID
+import com.example.myproject.Constants.CHANNEL_1_ID
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.vmadalin.easypermissions.EasyPermissions
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
@@ -91,6 +92,13 @@ class MainActivity : AppCompatActivity() {
             conn.disconnect()
         }
         return result
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        // EasyPermissions handles the request result
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
 
     private fun createNotification() {
