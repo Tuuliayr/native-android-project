@@ -4,6 +4,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Intent
+import android.location.Location
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -31,6 +32,8 @@ class MainActivity : AppCompatActivity() {
         var weatherDesc : String? = null
         var temperature : Int = 0
         var weatherId : Int = 0
+        var locationLat : Double = 0.0
+        var locationLong : Double = 0.0
     }
     private lateinit var notificationManager : NotificationManagerCompat
     private lateinit var weatherButton : ImageButton
@@ -50,7 +53,7 @@ class MainActivity : AppCompatActivity() {
 
         thread() {
             // put json data in string
-            val weatherJson : String? = getUrl("https://api.openweathermap.org/data/2.5/weather?lat=61.4898&lon=23.7735&appid=19076a0898f9475f79721bd1a75ea780&units=metric")
+            val weatherJson : String? = getUrl("https://api.openweathermap.org/data/2.5/weather?lat=$locationLat&lon=$locationLong&appid=19076a0898f9475f79721bd1a75ea780&units=metric")
             println(weatherJson)
             val mapper = ObjectMapper()
             // deserialize weatherJson
