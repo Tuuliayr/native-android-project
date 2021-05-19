@@ -4,4 +4,6 @@
     <string name="temp_celsius">%1$d°C</string>
     <string name="weather_icon_description">Weather icon</string>
     <string name="current_weather">Weather right now</string>
+    <string name="no_location">Cannot find location</string>
+    <string name="loc_updated">Location updated</string>
 </resources>
