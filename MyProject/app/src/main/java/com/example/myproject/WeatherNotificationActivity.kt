@@ -14,6 +14,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
@@ -75,11 +76,6 @@ class WeatherNotificationActivity : AppCompatActivity(), EasyPermissions.Permiss
         getLastLocation()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        unregisterReceiver(receiver)
-    }
-
     private fun getApiData() {
         thread() {
 
@@ -88,9 +84,9 @@ class WeatherNotificationActivity : AppCompatActivity(), EasyPermissions.Permiss
             println(weatherJson)
             val mapper = ObjectMapper()
             // deserialize weatherJson
-            val weatherObject: WeatherNotificationActivity.WeatherJsonObject = mapper.readValue(
+            val weatherObject: WeatherJsonObject = mapper.readValue(
                 weatherJson,
-                WeatherNotificationActivity.WeatherJsonObject::class.java
+                WeatherJsonObject::class.java
             )
 
             locationName = weatherObject.name
@@ -98,7 +94,7 @@ class WeatherNotificationActivity : AppCompatActivity(), EasyPermissions.Permiss
 
             println(weatherObject.name)
             println(weatherObject.main.temp)
-            val currentWeather: MutableList<WeatherNotificationActivity.WeatherInfo>? = weatherObject.weather
+            val currentWeather: MutableList<WeatherInfo>? = weatherObject.weather
             currentWeather?.forEach {
                 println(it.main)
                 weather = it.main
@@ -319,12 +315,19 @@ class WeatherNotificationActivity : AppCompatActivity(), EasyPermissions.Permiss
     }
 
     inner class MyBroadcastReceiver : BroadcastReceiver() {
+        @ExperimentalStdlibApi
         override fun onReceive(context: Context?, intent: Intent?) {
             getLastLocation()
 
-            if (weather == "Clear") {
-                createNotification()
+            if (weather != null) {
+                val weatherTemp = weather
+
+                if (weatherTemp?.lowercase() == "clear") {
+                    createNotification()
+                }
             }
+
+            //Toast.makeText(context, "Moi", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -343,7 +346,5 @@ class WeatherNotificationActivity : AppCompatActivity(), EasyPermissions.Permiss
             .build()
 
         notificationManager.notify(1, notification)
-
-        //val notificationChannelId: String = NotificationUtil.createNotificationChannel(this, bigTextStyleReminderAppData)
     }
 }

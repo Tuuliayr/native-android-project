@@ -34,7 +34,7 @@ class App : Application() {
             // channel 2
             val channel2 =
                     NotificationChannel(CHANNEL_2_ID, "channel2",
-                            NotificationManager.IMPORTANCE_LOW)
+                            NotificationManager.IMPORTANCE_NONE)
             channel2.description = "This is channel 2"
 
             // register them

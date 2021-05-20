@@ -1,29 +1,14 @@
 package com.example.myproject
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.content.BroadcastReceiver
+import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
-import android.location.Location
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.ContextCompat
-import com.example.myproject.Constants.CHANNEL_1_ID
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.vmadalin.easypermissions.EasyPermissions
-import org.json.JSONObject
-import java.net.HttpURLConnection
-import java.net.URL
-import kotlin.concurrent.thread
+
 
 class MainActivity : AppCompatActivity() {
     /*companion object {
@@ -41,11 +26,38 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        startService(Intent(this, BackgroundLocationService::class.java))
+        //startService(Intent(this, BackgroundLocationService::class.java))
+
         //val startIntent = Intent(this, BackgroundLocationService::class.java)
         //ContextCompat.startForegroundService(this, startIntent)
+        val service = BackgroundLocationService()
+        val serviceIntent = Intent(this, BackgroundLocationService::class.java)
+        if (!isMyServiceRunning(BackgroundLocationService::class.java)) {
+            startService(serviceIntent);
+        }
 
         weatherButton = findViewById(R.id.imageButton_weather)
+    }
+
+    private fun isMyServiceRunning(serviceClass: Class<*>): Boolean {
+        val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        for (service in manager.getRunningServices(Int.MAX_VALUE)) {
+            if (serviceClass.name == service.service.className) {
+                Log.i("Service status", "Running")
+                return true
+            }
+        }
+        Log.i("Service status", "Not running")
+        return false
+    }
+
+    override fun onDestroy() {
+        //stopService(mServiceIntent);
+        val broadcastIntent = Intent()
+        broadcastIntent.action = "restartservice"
+        broadcastIntent.setClass(this, Restarter::class.java)
+        this.sendBroadcast(broadcastIntent)
+        super.onDestroy()
     }
 
     fun weatherButtonClicked(button: View) {
