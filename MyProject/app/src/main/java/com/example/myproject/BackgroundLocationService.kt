@@ -22,10 +22,9 @@ class BackgroundLocationService : Service() {
         val t = thread() {
             var i = 1
             while (loop) {
-                Log.d(tag, i.toString())
                 Log.d(tag, Thread.currentThread().name)
                 sendBroadcast(Intent("location"))
-                Thread.sleep(1000)
+                Thread.sleep(5000)
                 i++
             }
         }
