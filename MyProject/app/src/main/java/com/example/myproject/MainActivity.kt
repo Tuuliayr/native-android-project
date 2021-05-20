@@ -15,6 +15,7 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import com.example.myproject.Constants.CHANNEL_1_ID
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -41,6 +42,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         startService(Intent(this, BackgroundLocationService::class.java))
+        //val startIntent = Intent(this, BackgroundLocationService::class.java)
+        //ContextCompat.startForegroundService(this, startIntent)
 
         weatherButton = findViewById(R.id.imageButton_weather)
     }

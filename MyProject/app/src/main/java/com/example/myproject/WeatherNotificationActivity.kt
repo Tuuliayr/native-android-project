@@ -335,8 +335,8 @@ class WeatherNotificationActivity : AppCompatActivity(), EasyPermissions.Permiss
 
         val notification = NotificationCompat.Builder(this, Constants.CHANNEL_1_ID)
             .setSmallIcon(R.drawable.ic_strength)
-            .setContentTitle("Current Weather")
-            .setContentText("weather")
+            .setContentTitle("Weather")
+            .setContentText("$weather $temperature °C")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
             .setContentIntent(resultPendingIntent)
