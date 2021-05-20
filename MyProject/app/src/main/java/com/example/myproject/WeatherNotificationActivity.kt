@@ -1,7 +1,10 @@
 package com.example.myproject
 
 import android.Manifest
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Build
@@ -21,11 +24,16 @@ import com.example.myproject.MainActivity.Companion.temperature
 import com.example.myproject.MainActivity.Companion.weather
 import com.example.myproject.MainActivity.Companion.weatherDesc
 import com.example.myproject.MainActivity.Companion.weatherId
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.muddzdev.styleabletoast.StyleableToast
 import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.dialogs.SettingsDialog
+import java.net.HttpURLConnection
+import java.net.URL
+import kotlin.concurrent.thread
 
 
 class WeatherNotificationActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
@@ -35,43 +43,99 @@ class WeatherNotificationActivity : AppCompatActivity(), EasyPermissions.Permiss
     lateinit var tempTextView: TextView
     lateinit var weatherImageView: ImageView
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private val receiver : BroadcastReceiver = MyBroadcastReceiver()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_weather_notification)
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
-        //requestPermissions()
-        getLastLocation()
+        registerReceiver(receiver, IntentFilter("location"))
 
         locNameTextView = findViewById(R.id.textView_locName)
-        locNameTextView.setText(locationName)
         weatherTextView = findViewById(R.id.textView_weather)
-        weatherTextView.setText(weather)
         infoTextView = findViewById(R.id.textView_weatherInfo)
-        infoTextView.setText(weatherDesc)
         tempTextView = findViewById(R.id.textView_temp)
-        tempTextView.setText(getString(R.string.temp_celsius, temperature))
-
         weatherImageView = findViewById(R.id.imageView_weatherIcon)
-        val icon: String = getWeatherIcon(weatherId)
-        weatherImageView.setImageResource(resources.getIdentifier(icon, "drawable", packageName))
+        tempTextView.text = ""
 
+        requestPermissions()
+        //getLastLocation()
     }
 
     override fun onResume() {
         super.onResume()
-        if (locationName.equals("Globe")) {
+        getLastLocation()
+    }
 
-            // Crete and customize toast
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(receiver)
+    }
+
+    private fun getApiData() {
+        thread() {
+
+            // put json data in string
+            val weatherJson : String? = getUrl("https://api.openweathermap.org/data/2.5/weather?lat=$locationLat&lon=$locationLong&appid=19076a0898f9475f79721bd1a75ea780&units=metric")
+            println(weatherJson)
+            val mapper = ObjectMapper()
+            // deserialize weatherJson
+            val weatherObject: WeatherNotificationActivity.WeatherJsonObject = mapper.readValue(weatherJson, WeatherNotificationActivity.WeatherJsonObject::class.java)
+
+            locationName = weatherObject.name
+            temperature = weatherObject.main.temp.toInt()
+
+            println(weatherObject.name)
+            println(weatherObject.main.temp)
+            val currentWeather: MutableList<WeatherNotificationActivity.WeatherInfo>? = weatherObject.weather
+            currentWeather?.forEach {
+                println(it.main)
+                weather = it.main
+                weatherDesc = it.description
+                weatherId = it.id
+            }
+
+            runOnUiThread(java.lang.Runnable {
+                locNameTextView.setText(locationName)
+                weatherTextView.setText(weather)
+                infoTextView.setText(weatherDesc)
+                tempTextView.setText(getString(R.string.temp_celsius, temperature))
+
+                val icon: String = getWeatherIcon(weatherId)
+                weatherImageView.setImageResource(resources.getIdentifier(icon, "drawable", packageName))
+            })
+        }
+        /*if (locationName.equals("Globe")) {
+
+            // Create and customize toast
             val toastText = getString(R.string.no_location)
             StyleableToast.makeText(this, toastText, R.style.toast_style).show()
 
-            //val toast = Toast.makeText(this, R.string.no_location, Toast.LENGTH_SHORT)
-            //val view : View = toast.getView()
-            //toast.show()
-        }
+        }*/
     }
+    private fun getUrl(url : String) : String? {
+        var result : String? = ""
+        val url: URL = URL(url)
+        val conn = url.openConnection() as HttpURLConnection
+        try {
+            result = conn.inputStream.bufferedReader().use {it.readText()}
+        } catch (e : Exception) {
+            println(e)
+        } finally {
+            conn.disconnect()
+        }
+        return result
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class WeatherInfo(var id : Int = 0, var main : String? = null, var description : String? = null)
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class WeatherTemp(var temp : Double = 0.0)
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class WeatherJsonObject(var name : String? = null, var weather : MutableList<WeatherInfo>? = null, var main : WeatherTemp = WeatherTemp(0.0))
 
     fun backButtonClicked(button: View) {
         openMainActivity()
@@ -124,7 +188,7 @@ class WeatherNotificationActivity : AppCompatActivity(), EasyPermissions.Permiss
 
     /*private fun checkPermission() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            getLocation()
+            getLastLocation()
         } else {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION))
         }
@@ -139,15 +203,19 @@ class WeatherNotificationActivity : AppCompatActivity(), EasyPermissions.Permiss
         ) {
             // if permission granted
             fusedLocationProviderClient.lastLocation.addOnCompleteListener { task ->
-                var location: Location? = task.result
-                if (location != null) {
-                    println(location.latitude)
-                    println(location.longitude)
-                    locationLat = location.latitude
-                    locationLong = location.longitude
+                thread() {
+                    val location: Location? = task.result
+                    if (location != null) {
+                        println(location.latitude)
+                        println(location.longitude)
+                        locationLat = location.latitude
+                        locationLong = location.longitude
 
-                    //val toastText = getString(R.string.loc_updated)
-                    //StyleableToast.makeText(this, toastText, R.style.toast_style).show()
+                        getApiData()
+
+                        //val toastText = getString(R.string.loc_updated)
+                        //StyleableToast.makeText(this, toastText, R.style.toast_style).show()
+                    }
                 }
             }
         } else {
@@ -207,5 +275,11 @@ class WeatherNotificationActivity : AppCompatActivity(), EasyPermissions.Permiss
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
+    }
+
+    inner class MyBroadcastReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            getLastLocation()
+        }
     }
 }

@@ -3,6 +3,8 @@ package com.example.myproject
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
 import android.location.Location
 import android.os.Build
@@ -42,10 +44,10 @@ class MainActivity : AppCompatActivity() {
         weatherButton = findViewById(R.id.imageButton_weather)
 
         notificationManager = NotificationManagerCompat.from(this)
-        createNotification()
+        //createNotification()
     }
 
-    override fun onResume() {
+    /*override fun onResume() {
         super.onResume()
 
         thread() {
@@ -69,7 +71,7 @@ class MainActivity : AppCompatActivity() {
                 weatherId = it.id
             }
         }
-    }
+    }*/
 
     fun weatherButtonClicked(button: View) {
         openWeatherActivity()
@@ -94,13 +96,6 @@ class MainActivity : AppCompatActivity() {
         return result
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        // EasyPermissions handles the request result
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
-    }
-
     private fun createNotification() {
         // Open activity when notification is tapped
         val resultIntent = Intent(this, WeatherNotificationActivity::class.java)
@@ -120,7 +115,7 @@ class MainActivity : AppCompatActivity() {
         //val notificationChannelId: String = NotificationUtil.createNotificationChannel(this, bigTextStyleReminderAppData)
     }
 
-    @JsonIgnoreProperties(ignoreUnknown = true)
+   @JsonIgnoreProperties(ignoreUnknown = true)
     data class WeatherInfo(var id : Int = 0, var main : String? = null, var description : String? = null)
 
     @JsonIgnoreProperties(ignoreUnknown = true)
