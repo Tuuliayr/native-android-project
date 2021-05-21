@@ -22,4 +22,4 @@
 
 ## Known bugs
 
-- Turning locations off
+- Turning locations on and off may cause the app hang for long time before weather data is shown again
