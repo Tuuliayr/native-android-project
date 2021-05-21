@@ -14,12 +14,12 @@
 
 ## Release 2: 2021-05-21 features
 
-- User receives a notification two times between 9am and 8pm if weather is clear
-- User is able to view current weather data from their location
-- User is able to turn off notifications from the app's settings
-- The app uses location services only if user has granted them
-- User is able get 11 different exercise suggestions
+- User receives a notification two times between 9am and 8pm if weather is clear.
+- User is able to view current weather data from their location.
+- User is able to turn off notifications from the app's settings.
+- The app uses location services only if user has granted them.
+- User is able get 11 different exercise suggestions.
 
 ## Known bugs
 
-- App sends a notification every time user goes from weather view to home view.
+- Turning locations off
