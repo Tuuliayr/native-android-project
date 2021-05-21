@@ -303,6 +303,7 @@ class WeatherNotificationActivity : AppCompatActivity(), EasyPermissions.Permiss
         override fun onReceive(context: Context?, intent: Intent?) {
             getLastLocation()
             locationEnabled()
+            // For demonstrating the notification in video, delete after
             if (gpsStatus) {
                 createNotification()
             }
