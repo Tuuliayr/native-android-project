@@ -11,15 +11,6 @@ import androidx.appcompat.app.AppCompatActivity
 
 
 class MainActivity : AppCompatActivity() {
-    /*companion object {
-        var locationName : String? = null
-        var weather : String? = null
-        var weatherDesc : String? = null
-        var temperature : Int = 0
-        var weatherId : Int = 0
-        var locationLat : Double = 0.0
-        var locationLong : Double = 0.0
-    }*/
     private lateinit var exerciseTextView: TextView
     private lateinit var weatherButton : ImageButton
 
@@ -27,12 +18,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        //startService(Intent(this, BackgroundLocationService::class.java))
-
-        //val startIntent = Intent(this, BackgroundLocationService::class.java)
-        //ContextCompat.startForegroundService(this, startIntent)
-        //val service = BackgroundLocationService()
         val serviceIntent = Intent(this, BackgroundLocationService::class.java)
+        // Start service if background service is not running
         if (!isMyServiceRunning(BackgroundLocationService::class.java)) {
             startService(serviceIntent);
         }
@@ -40,6 +27,11 @@ class MainActivity : AppCompatActivity() {
         weatherButton = findViewById(R.id.imageButton_weather)
     }
 
+    /*
+    * To restart service, broadcast with action name "restartservice" triggers broadcast receiver
+    * Restarter's onReceive method
+    *
+     */
     override fun onDestroy() {
         //stopService(mServiceIntent);
         val broadcastIntent = Intent()
@@ -49,6 +41,9 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
+    /*
+    * Checks if background service is running
+     */
     private fun isMyServiceRunning(serviceClass: Class<*>): Boolean {
         val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         for (service in manager.getRunningServices(Int.MAX_VALUE)) {
@@ -65,20 +60,28 @@ class MainActivity : AppCompatActivity() {
         openWeatherActivity()
     }
 
+    private fun openWeatherActivity() {
+        val resultIntent = Intent(this, WeatherNotificationActivity::class.java)
+        startActivity(resultIntent)
+    }
+
     fun exerciseButtonClicked(button: View) {
+        exerciseTextView.text = getExercise()
+    }
+
+    /*
+    * Get random exercise from map
+     */
+    private fun getExercise() : String {
         var exercise = ""
         val random = (1..11).random()
+
         val allExercises = mapOf(1 to "10 squats", 2 to "20 squats", 3 to "40 squats",
                 4 to "Elbow plank 1 min", 5 to "Cat cow stretch 1 min", 6 to "Cobra stretch 30 sec + child's pose 30 sec",
                 7 to "Hamstring stretch 30 sec", 8 to "Standing quad stretch 30 sec", 9 to "Number 4 sit 30 sec",
                 10 to "Hip flexor stretch 30 sec", 11 to "Spinal twist 15-30 sec")
+
         exercise = allExercises[random].toString()
-
-        exerciseTextView.text = exercise
-    }
-
-    private fun openWeatherActivity() {
-        val resultIntent = Intent(this, WeatherNotificationActivity::class.java)
-        startActivity(resultIntent)
+        return exercise
     }
 }

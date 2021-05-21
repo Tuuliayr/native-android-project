@@ -30,6 +30,7 @@ class BackgroundLocationService : Service() {
         )
     }
 
+    // Continuous notification
     @RequiresApi(Build.VERSION_CODES.O)
     private fun startMyOwnForeground() {
         val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_2_ID)
@@ -52,7 +53,8 @@ class BackgroundLocationService : Service() {
         val t = thread() {
             while (loop) {
                 Log.d(tag, Thread.currentThread().name)
-               // sendBroadcast(Intent("location"))
+                // Send broadcast if time is between 9am and 8pm, do again in 5 hours
+                // If time is not right try again in 2 hours
                 if (isItTime()) {
                     sendBroadcast(Intent("location"))
                     //TimeUnit.HOURS.sleep(5)
@@ -61,12 +63,14 @@ class BackgroundLocationService : Service() {
                     //TimeUnit.HOURS.sleep(2)
                     Thread.sleep(3000)
                 }
-                //Thread.sleep(10000)
             }
         }
         return START_STICKY
     }
 
+    /*
+    * Checks current hour, returns false if the time is not between 9am and 8pm
+     */
     private fun isItTime() : Boolean {
         val currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
         println(currentHour)

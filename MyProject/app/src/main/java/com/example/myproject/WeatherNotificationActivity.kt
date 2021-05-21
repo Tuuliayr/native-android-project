@@ -68,7 +68,6 @@ class WeatherNotificationActivity : AppCompatActivity(), EasyPermissions.Permiss
         tempTextView.text = ""
 
         requestPermissions()
-        //getLastLocation()
     }
 
     override fun onResume() {
@@ -76,12 +75,22 @@ class WeatherNotificationActivity : AppCompatActivity(), EasyPermissions.Permiss
         getLastLocation()
     }
 
+    fun backButtonClicked(button: View) {
+        openMainActivity()
+    }
+
+    private fun openMainActivity() {
+        val resultIntent = Intent(this, MainActivity::class.java)
+        startActivity(resultIntent)
+    }
+
+    /*
+    * Get current weather from OpenWeatherMap using user's coordinates
+     */
     private fun getApiData() {
         thread() {
-
             // put json data in string
             val weatherJson : String? = getUrl("https://api.openweathermap.org/data/2.5/weather?lat=$locationLat&lon=$locationLong&appid=19076a0898f9475f79721bd1a75ea780&units=metric")
-            println(weatherJson)
             val mapper = ObjectMapper()
             // deserialize weatherJson
             val weatherObject: WeatherJsonObject = mapper.readValue(
@@ -92,17 +101,15 @@ class WeatherNotificationActivity : AppCompatActivity(), EasyPermissions.Permiss
             locationName = weatherObject.name
             temperature = weatherObject.main.temp.toInt()
 
-            println(weatherObject.name)
-            println(weatherObject.main.temp)
             val currentWeather: MutableList<WeatherInfo>? = weatherObject.weather
             currentWeather?.forEach {
-                println(it.main)
                 weather = it.main
                 weatherDesc = it.description
                 weatherId = it.id
             }
 
-            runOnUiThread(java.lang.Runnable {
+            // Change view according to resulted data
+            runOnUiThread {
                 locNameTextView.text = locationName
                 weatherTextView.text = weather
                 infoTextView.text = weatherDesc
@@ -116,16 +123,13 @@ class WeatherNotificationActivity : AppCompatActivity(), EasyPermissions.Permiss
                         packageName
                     )
                 )
-            })
+            }
         }
-        /*if (locationName.equals("Globe")) {
-
-            // Create and customize toast
-            val toastText = getString(R.string.no_location)
-            StyleableToast.makeText(this, toastText, R.style.toast_style).show()
-
-        }*/
     }
+
+    /*
+    * Open connection, read result of the stream and return as string
+     */
     private fun getUrl(url: String) : String? {
         var result : String? = ""
         val url: URL = URL(url)
@@ -158,15 +162,6 @@ class WeatherNotificationActivity : AppCompatActivity(), EasyPermissions.Permiss
             0.0
         )
     )
-
-    fun backButtonClicked(button: View) {
-        openMainActivity()
-    }
-
-    private fun openMainActivity() {
-        val resultIntent = Intent(this, MainActivity::class.java)
-        startActivity(resultIntent)
-    }
 
     // Find icon by id and return the name
     private fun getWeatherIcon(id: Int): String {
@@ -208,25 +203,19 @@ class WeatherNotificationActivity : AppCompatActivity(), EasyPermissions.Permiss
         return icon
     }
 
-    /*private fun checkPermission() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            getLastLocation()
-        } else {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION))
-        }
-    }*/
-
     // Check if location services is enabled
     private fun locationEnabled() {
         val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         gpsStatus = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
     }
 
+    /*
+    * Get location coordinates
+     */
     private fun getLastLocation() {
         locationEnabled()
         // if location is enabled
         if (gpsStatus) {
-
             // check permission
             if (ActivityCompat.checkSelfPermission(
                     this,
@@ -244,9 +233,6 @@ class WeatherNotificationActivity : AppCompatActivity(), EasyPermissions.Permiss
                             locationLong = location.longitude
 
                             getApiData()
-
-                            //val toastText = getString(R.string.loc_updated)
-                            //StyleableToast.makeText(this, toastText, R.style.toast_style).show()
                         }
                     }
                 }
@@ -297,9 +283,6 @@ class WeatherNotificationActivity : AppCompatActivity(), EasyPermissions.Permiss
         if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
             SettingsDialog.Builder(this).build().show()
         }
-        /*else {
-            requestPermissions()
-        }*/
     }
 
     // Not used but required by the interface
@@ -314,6 +297,7 @@ class WeatherNotificationActivity : AppCompatActivity(), EasyPermissions.Permiss
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
 
+    // Does this every time broadcast is sent
     inner class MyBroadcastReceiver : BroadcastReceiver() {
         @ExperimentalStdlibApi
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -322,19 +306,21 @@ class WeatherNotificationActivity : AppCompatActivity(), EasyPermissions.Permiss
             if (gpsStatus) {
                 createNotification()
             }
+            if (gpsStatus) {
+                if (weather != null) {
+                    val weatherTemp = weather
 
-            if (weather != null) {
-                val weatherTemp = weather
-
-                if (weatherTemp?.lowercase() == "clear") {
-                    createNotification()
+                    if (weatherTemp?.lowercase() == "clear") {
+                        createNotification()
+                    }
                 }
             }
-
-            //Toast.makeText(context, "Moi", Toast.LENGTH_SHORT).show()
         }
     }
 
+    /*
+    * Notification for clear weather
+     */
     private fun createNotification() {
         // Open activity when notification is tapped
         val resultIntent = Intent(this, WeatherNotificationActivity::class.java)

@@ -10,10 +10,6 @@ import com.example.myproject.Constants.CHANNEL_1_ID
 import com.example.myproject.Constants.CHANNEL_2_ID
 
 class App : Application() {
-    /*companion object {
-        const val CHANNEL_1_ID: String = "channel1"
-        const val CHANNEL_2_ID: String = "channel2"
-    }*/
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate() {
         super.onCreate()
@@ -25,21 +21,20 @@ class App : Application() {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun createNotificationChannels() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // channel 1
+            // channel 1 for weather notification
             val channel1 =
-                    NotificationChannel(CHANNEL_1_ID, "channel1",
+                    NotificationChannel(CHANNEL_1_ID, "Clear weather",
                             NotificationManager.IMPORTANCE_HIGH)
             channel1.description = "This is channel 1"
 
-            // channel 2
+            // channel 2 for foreground's continuous notification
             val channel2 =
-                    NotificationChannel(CHANNEL_2_ID, "channel2",
+                    NotificationChannel(CHANNEL_2_ID, "My Project",
                             NotificationManager.IMPORTANCE_NONE)
             channel2.description = "This is channel 2"
 
             // register them
             val notificationManager = getSystemService(NotificationManager::class.java)
-            //val notificationManager: NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel1)
             notificationManager.createNotificationChannel(channel2)
         }
