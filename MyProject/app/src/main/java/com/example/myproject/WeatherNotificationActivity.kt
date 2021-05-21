@@ -305,7 +305,9 @@ class WeatherNotificationActivity : AppCompatActivity(), EasyPermissions.Permiss
             locationEnabled()
             // For demonstrating the notification in video, delete after
             if (gpsStatus) {
-                createNotification()
+                if (weather != null) {
+                    createNotification()
+                }
             }
             if (gpsStatus) {
                 if (weather != null) {
