@@ -23,3 +23,7 @@
 ## Known bugs
 
 - Turning locations on and off may cause the app hang for long time before weather data is shown again
+
+## Screencast
+
+https://vimeo.com/553516909
