@@ -57,11 +57,9 @@ class BackgroundLocationService : Service() {
                 // If time is not right try again in 2 hours
                 if (isItTime()) {
                     sendBroadcast(Intent("location"))
-                    //TimeUnit.HOURS.sleep(5)
-                    Thread.sleep(10000)
+                    TimeUnit.HOURS.sleep(5)
                 } else {
-                    //TimeUnit.HOURS.sleep(2)
-                    Thread.sleep(3000)
+                    TimeUnit.HOURS.sleep(2)
                 }
             }
         }

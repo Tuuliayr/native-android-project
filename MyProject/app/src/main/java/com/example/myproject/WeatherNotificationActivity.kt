@@ -90,7 +90,7 @@ class WeatherNotificationActivity : AppCompatActivity(), EasyPermissions.Permiss
     private fun getApiData() {
         thread() {
             // put json data in string
-            val weatherJson : String? = getUrl("https://api.openweathermap.org/data/2.5/weather?lat=$locationLat&lon=$locationLong&appid=19076a0898f9475f79721bd1a75ea780&units=metric")
+            val weatherJson : String? = getUrl("https://api.openweathermap.org/data/2.5/weather?lat=$locationLat&lon=$locationLong&appid=d68bb4c3e7ff8e28188bb13262e0fe76&units=metric")
             val mapper = ObjectMapper()
             // deserialize weatherJson
             val weatherObject: WeatherJsonObject = mapper.readValue(
@@ -279,6 +279,8 @@ class WeatherNotificationActivity : AppCompatActivity(), EasyPermissions.Permiss
         }
     }
 
+    // Check whether the user denied any permissions and checked "NEVER ASK AGAIN."
+    // This will display a dialog directing them to enable the permission in app settings.
     override fun onPermissionsDenied(requestCode: Int, perms: List<String>) {
         if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
             SettingsDialog.Builder(this).build().show()
@@ -294,6 +296,7 @@ class WeatherNotificationActivity : AppCompatActivity(), EasyPermissions.Permiss
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        // Forward results to EasyPermissions
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
 
@@ -303,12 +306,7 @@ class WeatherNotificationActivity : AppCompatActivity(), EasyPermissions.Permiss
         override fun onReceive(context: Context?, intent: Intent?) {
             getLastLocation()
             locationEnabled()
-            // For demonstrating the notification in video, delete after
-            if (gpsStatus) {
-                if (weather != null) {
-                    createNotification()
-                }
-            }
+
             if (gpsStatus) {
                 if (weather != null) {
                     val weatherTemp = weather
