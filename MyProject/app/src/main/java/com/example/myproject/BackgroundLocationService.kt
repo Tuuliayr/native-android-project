@@ -13,6 +13,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.example.myproject.Constants.CHANNEL_2_ID
+import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 
@@ -31,14 +32,6 @@ class BackgroundLocationService : Service() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun startMyOwnForeground() {
-        /*val channelName = "Background Service"
-        val chan = NotificationChannel(
-            CHANNEL_2_ID,
-            channelName,
-            NotificationManager.IMPORTANCE_NONE
-        )
-        chan.lightColor = Color.BLUE
-        chan.lockscreenVisibility = Notification.VISIBILITY_PRIVATE*/
         val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_2_ID)
         val notification: Notification = notificationBuilder.setOngoing(true)
             .setContentTitle("App is running in background")
@@ -59,11 +52,22 @@ class BackgroundLocationService : Service() {
         val t = thread() {
             while (loop) {
                 Log.d(tag, Thread.currentThread().name)
-                sendBroadcast(Intent("location"))
-                //Thread.sleep(5000)
-                TimeUnit.HOURS.sleep(2)
+               // sendBroadcast(Intent("location"))
+                if (isItTime()) {
+                    sendBroadcast(Intent("location"))
+                    TimeUnit.HOURS.sleep(5)
+                } else {
+                    TimeUnit.HOURS.sleep(2)
+                }
+                //Thread.sleep(10000)
             }
         }
         return START_STICKY
+    }
+
+    private fun isItTime() : Boolean {
+        val currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+        println(currentHour)
+        return currentHour in 9..19
     }
 }
