@@ -21,12 +21,11 @@
         <TextView
             android:id="@+id/textView_exercise"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="65dp"
-            android:paddingTop="16dp"
+            android:layout_height="150dp"
+            android:paddingTop="36dp"
             android:text="@string/exercise_name"
             android:textSize="26sp"
-            android:gravity="center"/>
+            android:gravity="center_horizontal"/>
 
         <Button
             android:onClick="exerciseButtonClicked"
