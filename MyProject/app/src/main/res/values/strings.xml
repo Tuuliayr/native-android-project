@@ -6,4 +6,6 @@
     <string name="current_weather">Weather right now</string>
     <string name="no_location">Turn on locations</string>
     <string name="loc_updated">Location updated</string>
+    <string name="bt_get_exercise">Get random exercise</string>
+    <string name="exercise_name">Random exercise</string>
 </resources>

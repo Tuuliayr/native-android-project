@@ -103,10 +103,10 @@ class WeatherNotificationActivity : AppCompatActivity(), EasyPermissions.Permiss
             }
 
             runOnUiThread(java.lang.Runnable {
-                locNameTextView.setText(locationName)
-                weatherTextView.setText(weather)
-                infoTextView.setText(weatherDesc)
-                tempTextView.setText(getString(R.string.temp_celsius, temperature))
+                locNameTextView.text = locationName
+                weatherTextView.text = weather
+                infoTextView.text = weatherDesc
+                tempTextView.text = getString(R.string.temp_celsius, temperature)
 
                 val icon: String = getWeatherIcon(weatherId)
                 weatherImageView.setImageResource(
@@ -318,6 +318,10 @@ class WeatherNotificationActivity : AppCompatActivity(), EasyPermissions.Permiss
         @ExperimentalStdlibApi
         override fun onReceive(context: Context?, intent: Intent?) {
             getLastLocation()
+            locationEnabled()
+            if (gpsStatus) {
+                createNotification()
+            }
 
             if (weather != null) {
                 val weatherTemp = weather

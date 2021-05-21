@@ -55,9 +55,11 @@ class BackgroundLocationService : Service() {
                // sendBroadcast(Intent("location"))
                 if (isItTime()) {
                     sendBroadcast(Intent("location"))
-                    TimeUnit.HOURS.sleep(5)
+                    //TimeUnit.HOURS.sleep(5)
+                    Thread.sleep(10000)
                 } else {
-                    TimeUnit.HOURS.sleep(2)
+                    //TimeUnit.HOURS.sleep(2)
+                    Thread.sleep(3000)
                 }
                 //Thread.sleep(10000)
             }
