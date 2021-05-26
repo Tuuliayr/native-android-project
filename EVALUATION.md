@@ -18,3 +18,5 @@ Koodin laatu
 - Pilkottu useampaan tiedostoon.
 - Muuttujat hyvin nimetty.
 - Hyvin toteutetut virheenkäsittelyt.
+
+Arvosana: 4
