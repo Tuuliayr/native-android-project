@@ -27,12 +27,12 @@
 
 ## Getting started
 
-Java and Kotlin installation
+1. Install latest versions of Java SE and Kotlin compiler
 
-1. Download Android Studio
+2. Download Android Studio
 https://developer.android.com/studio
 
-2. Clone the repo
+3. Clone the repo
 
 ```
 git clone https://github.com/Tuuliayr/native-android-project.git
