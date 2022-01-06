@@ -22,7 +22,7 @@
 
 ## Known bugs
 
-- Turning locations on and off may cause the app hang for a while before weather data is shown again.
+- Turning locations on and off may cause the app to hang for a while before weather data is shown again.
 - For location permission "always" and "never" are only recognized commands.
 
 ## Getting started
