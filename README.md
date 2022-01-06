@@ -25,9 +25,9 @@
 - Turning locations on and off may cause the app hang for a while before weather data is shown again.
 - For location permission "always" and "never" are only recognized commands.
 
-## Screenshots
+## Usage
 
-- Demonstrating the functionalities of the app.
+- Demonstrating the functionalities of the app with screenshots.
 
 By pressing the "get random exercise" button user receives suggestions of different exercises.                    |  Exercise 1               |    Exercise 2
 :----------------------------------------------------------------------------------------------------------------:|:-------------------------:|:-------------------------:
