@@ -27,12 +27,24 @@
 
 ## Getting started
 
-1. Install latest versions of Java SE and Kotlin compiler
+### 1. Java and Kotlin installation (Windows)
 
-2. Download Android Studio
+- Install latest versions of Java SE (https://jdk.java.net) and Kotlin compiler (https://github.com/JetBrains/kotlin/releases/tag/v1.6.10).
+- Unzip the packages and move them to another folder e.g. ```c:\Program Files\```.
+- Modify paths. Edit the system environment variables by adding new paths that point to the bin directory of your installation folders.
+- Open command prompt and check if you have installed correctly by giving commands
+```
+javac -version
+java -version
+kotlinc -version
+```
+Kotlin requires 1.6+ Java.
+
+### 2. Download Android Studio
+
 https://developer.android.com/studio
 
-3. Clone the repo
+### 3. Clone the repo
 
 ```
 git clone https://github.com/Tuuliayr/native-android-project.git
