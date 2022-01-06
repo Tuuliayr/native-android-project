@@ -25,6 +25,19 @@
 - Turning locations on and off may cause the app hang for a while before weather data is shown again.
 - For location permission "always" and "never" are only recognized commands.
 
+## Getting started
+
+Java and Kotlin installation
+
+1. Download Android Studio
+https://developer.android.com/studio
+
+2. Clone the repo
+
+```
+git clone https://github.com/Tuuliayr/native-android-project.git
+```
+
 ## Usage
 
 - Demonstrating the functionalities of the app with screenshots.
